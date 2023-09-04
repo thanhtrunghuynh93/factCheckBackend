@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from fastapi.middleware.cors import CORSMiddleware
-from server.routes.question import router as QuestionRouter
+from server.routes.factCheck import router as factCheckRouter
 
 app = FastAPI()
 
@@ -15,7 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(QuestionRouter, tags=["Question"], prefix="/question")
+app.include_router(factCheckRouter, tags=["FactCheck"], prefix="/factCheck")
 
 
 @app.get("/", tags=["Root"])

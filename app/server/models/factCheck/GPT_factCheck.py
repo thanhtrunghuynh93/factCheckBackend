@@ -5,11 +5,13 @@ from sentence_transformers import SentenceTransformer
 import json
 import jellyfish
 import openai
+import yaml
 
 sbert = None 
-key = "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"
 
-openai.api_key = key
+with open('config.yaml', 'r') as file:
+    cfg = yaml.safe_load(file)
+    openai.api_key = cfg["openapi_key"]
 
 def initBert():
     global sbert

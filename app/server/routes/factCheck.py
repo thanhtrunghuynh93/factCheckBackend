@@ -2,7 +2,8 @@ from fastapi import APIRouter, Body
 from fastapi.encoders import jsonable_encoder
 
 from server.dms.factCheck import (
-    fact_check_by_gpt
+    fact_check_by_gpt,
+    fact_check_by_local_model
 )
 from server.dms.nliCheck import (
     fact_check_by_nli
@@ -43,3 +44,8 @@ async def get_question_by_params(params: factSchema = Body(...)):
     factCheck = await fact_check_by_nli(params)
     return ResponseModel(factCheck, "Fact checked successfully.")
 
+@router.post("/local", response_description="Verify a fact")
+async def get_question_by_params(params: factSchema = Body(...)):
+    params = jsonable_encoder(params)
+    factCheck = await fact_check_by_local_model(params)
+    return ResponseModel(factCheck, "Fact checked successfully.")

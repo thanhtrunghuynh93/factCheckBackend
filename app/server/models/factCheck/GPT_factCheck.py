@@ -6,12 +6,14 @@ import json
 import jellyfish
 import openai
 import yaml
+import os
 
 sbert = None 
 
-with open('config.yaml', 'r') as file:
-    cfg = yaml.safe_load(file)
-    openai.api_key = cfg["openapi_key"]
+if os.path.isfile('config.yaml'):
+    with open('config.yaml', 'r') as file:
+        cfg = yaml.safe_load(file)
+        openai.api_key = cfg["openapi_key"]
 
 def initBert():
     global sbert

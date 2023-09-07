@@ -109,7 +109,7 @@ def format_answer(answer, evidences, evidence_url_dict):
     
     return json.dumps(res)
 
-def verify(claim = "World-renowned singer Celine Dion died or revealed new personal health developments in late July 2023."):
+def verify_gpt(claim = "World-renowned singer Celine Dion died or revealed new personal health developments in late July 2023."):
 
     global sbert 
     if sbert is None: 

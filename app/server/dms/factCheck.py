@@ -1,4 +1,4 @@
-from server.models.factCheck.GPT_factCheck import verify
+from server.models.factCheck.GPT_factCheck import verify_gpt
 from server.models.factCheck.local_factCheck import verify_by_local_model 
 from server.models.factCheck.nli_factCheck import verify
 
@@ -19,7 +19,7 @@ from server.models.factCheck.nli_factCheck import verify
 
 async def fact_check_by_gpt(params: dict) -> dict:
     params = dict(params)
-    res = verify(params["claim"])
+    res = verify_gpt(params["claim"])
     return res
 
 async def fact_check_by_local_model(params: dict) -> dict:

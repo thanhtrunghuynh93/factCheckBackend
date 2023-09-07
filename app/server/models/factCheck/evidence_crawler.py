@@ -44,7 +44,7 @@ def get_evidence_links(claim):
     claim = claim.strip().replace(" ","+")
 #     for i in [0, 10, 20]:
     for i in [0]:
-        url  = f'https://www.google.com/search?q={claim}&start={i}'
+        url  = "https://www.google.com/search?q={claim}&start={i}"
         r = requests.get(url.strip(), headers=HEADERS)
         soup = BeautifulSoup(r.text, 'html.parser')
         search_result = soup.find("div", attrs={"id": "search"})

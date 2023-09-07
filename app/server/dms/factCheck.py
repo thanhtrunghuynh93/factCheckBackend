@@ -1,5 +1,7 @@
 from server.models.factCheck.GPT_factCheck import verify
 from server.models.factCheck.local_factCheck import verify_by_local_model 
+from server.models.factCheck.nli_factCheck import verify
+
 
 # def factCheck_helper(data) -> dict:
 #     return {
@@ -23,6 +25,11 @@ async def fact_check_by_gpt(params: dict) -> dict:
 async def fact_check_by_local_model(params: dict) -> dict:
     params = dict(params)
     res = verify_by_local_model(params["claim"])
+    return res
+
+async def fact_check_by_nli(params: dict) -> dict:
+    params = dict(params)
+    res = verify(params["claim"])
     return res
 
 # async def retrieve_question_by_id(id: str) -> dict:

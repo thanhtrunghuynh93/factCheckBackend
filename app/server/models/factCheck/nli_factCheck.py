@@ -50,14 +50,14 @@ def process_nli(claim, evidences):
             num_entailment += 1
         evidence_tuple["order"] = order
         evidence_tuple["claim"] = premise
-        evidence_tuple["nli_label"] = nli_labels_argmax
+        evidence_tuple["explanation"] = nli_labels_argmax
         evidence_tuple["probs"] = probs.detach().cpu().numpy().tolist()
         evidence_tuples.append(evidence_tuple)
         order += 1
     if num_entailment > num_contradiction:
-        result = True
+        result = "True"
     elif num_entailment < num_contradiction:
-        result = False
+        result = "Fake"
     else:
         result = 'unknown'
 

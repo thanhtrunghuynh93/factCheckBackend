@@ -29,7 +29,7 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
     return response.choices[0].message["content"]
 
 def generate_prompt(claim, evidences):
-    prompt = "Justify the claim given the evidences. Write only the answer in [Fake, True] in the first line. Then, point out the most 5 relevant evidences leading to the conclusion with the format: [Original evidence number]: '''[Original evidence]'''. Explanation: [explanation]."
+    prompt = "Act as a journalist, justify the claim given the evidences. Write only the answer in [Fake, True] in the first line. Then, point out the most 5 relevant evidences leading to the conclusion with the format: [Original evidence number]: '''[Original evidence]'''. Explanation: [explanation]."
     prompt += "\nClaim: '''{}'''".format(claim)
     prompt += "\nEvidences:\n"
     for i in range(len(evidences)): 
@@ -100,7 +100,7 @@ def format_answer(answer, evidences, evidence_url_dict):
         
         evidence_tuple["order"] = order
         evidence_tuple["claim"] = evi
-        evidence_tuple["explanation"] = expl
+        evidence_tuple["explanation"] = expl.split("Explanation:")[1]
         evidence_tuple["source"] = url
         evidence_tuples.append(evidence_tuple)
         order += 1

@@ -172,7 +172,7 @@ def verify_by_local_model(claim = "World-renowned singer Celine Dion died or rev
 
         answers.append(answer)
 
-    return format_answer(answers,  candidates, candidate_url_dict)
+    return format_answer(answers, candidates, candidate_url_dict)
 
 if __name__ == "__main__":
     

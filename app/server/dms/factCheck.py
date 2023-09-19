@@ -19,7 +19,9 @@ from server.models.factCheck.nli_factCheck import verify
 
 async def fact_check_by_gpt(params: dict) -> dict:
     params = dict(params)
+    print(params["claim"])
     res = verify_gpt(params["claim"])
+    
     return res
 
 async def fact_check_by_local_model(params: dict) -> dict:

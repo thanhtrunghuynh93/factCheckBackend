@@ -46,9 +46,14 @@ def get_evidence_links(claim):
     for i in [0]:
         url  = f'https://www.google.com/search?q={claim}&start={i}'
         r = requests.get(url.strip(), headers=HEADERS)
-        soup = BeautifulSoup(r.text, 'html.parser')
+        soup = BeautifulSoup(r.text, 'html.parser')        
         search_result = soup.find("div", attrs={"id": "search"})
-        for div in search_result.findAll('a'):
+        divs = search_result.findAll('a')
+        if divs is None:
+            print("Error in crawling google links".format(soup.text))
+            return None
+
+        for div in divs:
             if 'data-ved' in div.attrs and 'ping' in div.attrs:
                 links.append(div['href'])
 #         time.sleep(5)

@@ -46,11 +46,12 @@ def get_evidence_links(claim):
     for i in [0]:
         url  = f'https://www.google.com/search?q={claim}&start={i}'
         r = requests.get(url.strip(), headers=HEADERS)
+        print(r.status_code)
         soup = BeautifulSoup(r.text, 'html.parser')        
         search_result = soup.find("div", attrs={"id": "search"})
         if search_result is None:
             print("Error in crawling google links".format(soup.text))
-            return None
+            return []
 
         divs = search_result.findAll('a')        
         for div in divs:

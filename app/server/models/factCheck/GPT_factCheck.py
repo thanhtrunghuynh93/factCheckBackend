@@ -127,6 +127,6 @@ def verify_gpt(claim = "World-renowned singer Celine Dion died or revealed new p
 
 if __name__ == "__main__":
     
-    verify()
+    verify_gpt()
 
 

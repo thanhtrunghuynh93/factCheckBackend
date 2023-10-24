@@ -19,7 +19,7 @@ def initBert():
     global sbert
     sbert = SentenceTransformer('sentence-transformers/sentence-t5-base')
 
-def get_completion(prompt, model="gpt-3.5-turbo"):
+def get_completion(prompt, model="gpt-4"):
     messages = [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(
         model=model,

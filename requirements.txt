@@ -9,3 +9,5 @@ tqdm
 numpy
 openai
 sentence-transformers
+drug-named-entity-recognition
+gym

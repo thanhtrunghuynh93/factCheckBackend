@@ -147,7 +147,13 @@ class WikiEnv(gym.Env):
       else:
         passages = parse_passages(response_text)
         evidences = get_diversed_evidences(self.sbert, self.claim, passages, beta=0.7, k=3)
-        self.obs = self.get_page_obs("Evidence:".join(evidences))
+
+        self.obs = ""
+        for i in range(len(evidences)):
+          e = evidences[i]
+          self.obs += f"Evidence {i+1}: {e}\n"
+
+        #  = self.get_page_obs("Evidence:".join(evidences))
         
         # self.page = ""
         # for p in page:

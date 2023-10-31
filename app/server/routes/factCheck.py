@@ -4,7 +4,8 @@ from fastapi.encoders import jsonable_encoder
 from server.dms.factCheck import (
     fact_check_by_gpt,
     fact_check_by_local_model,
-    fact_check_by_nli
+    fact_check_by_nli,
+    medfact
 )
 
 from server.utils.response import (
@@ -12,7 +13,7 @@ from server.utils.response import (
     ResponseModel,
 )
 
-from server.models.fact import factSchema
+from server.models.fact import factSchema, medFact
 
 router = APIRouter()
 
@@ -30,6 +31,11 @@ router = APIRouter()
 #         return ResponseModel(question, "question data retrieved successfully")
 #     return ErrorResponseModel("An error occurred.", 404, "question doesn't exist.")
 
+@router.post("/medfact", response_description="Medfact")
+async def get_question_by_params(params: medFact = Body(...)):
+    params = jsonable_encoder(params)
+    factCheck = await medfact(params)
+    return ResponseModel(factCheck, "Fact checked successfully.")
 
 @router.post("/gpt", response_description="Verify a fact")
 async def get_question_by_params(params: factSchema = Body(...)):

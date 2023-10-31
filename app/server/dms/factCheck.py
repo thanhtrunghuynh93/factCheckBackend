@@ -1,6 +1,7 @@
 from server.models.factCheck.GPT_factCheck import verify_gpt
 from server.models.factCheck.local_factCheck import verify_by_local_model 
 from server.models.factCheck.nli_factCheck import verify
+from server.models.factCheck.MedFact.factCheck import factCheck
 
 
 # def factCheck_helper(data) -> dict:
@@ -16,6 +17,12 @@ from server.models.factCheck.nli_factCheck import verify
 #     sample2 = {"question": "What is it?", "answer": "I don't know!"}
 #     questions.append(question_helper(sample2))
 #     return questions
+
+async def medfact(params: dict) -> dict:
+    params = dict(params)
+    print(params["claim"])
+    res = factCheck(params)    
+    return res
 
 async def fact_check_by_gpt(params: dict) -> dict:
     params = dict(params)

@@ -6,6 +6,7 @@ from newspaper import Article
 from sentence_transformers import SentenceTransformer
 from server.models.factCheck.evidence_filter import get_diversed_evidences, print_evidences
 from server.models.factCheck.GPT_factCheck import get_completion
+from server.models.factCheck.MedFact.rxlist_crawler import crawl_evidences
 
 
 # import wikipedia
@@ -20,6 +21,13 @@ def is_drug(input):
 def clean_str(p):
   return p.encode().decode("unicode-escape").encode("latin1").decode("utf-8")
 
+def clean_brackets(input):
+    res = []
+    es = input.split("[")
+    for e in es:
+        res.append(e.split("]")[-1])
+    return " ".join(res)
+
 def parse_passages(html):
     article = Article(url = '')
     article.set_html(html)
@@ -31,8 +39,11 @@ def parse_passages(html):
     
     for text in raw_passages:
         text = text.strip()
-        if len(text.split(" ")) <= 6:    #High chance to be a title, append to the next passage        
-            cache += text
+        if len(text.split(" ")) <= 10:    #High chance to be a title, append to the next passage     
+            if cache == "":
+                cache = text
+            else:
+                cache += ". {}".format(text)
         else: 
             if len(cache) > 0:
                 ret_passages.append(cache + ". " + text)
@@ -40,6 +51,10 @@ def parse_passages(html):
             else:                
                 ret_passages.append(text)
 
+    for i in range(len(ret_passages)):
+        ret_passages[i] = clean_brackets(ret_passages[i])
+        # ret_passages[i] = ". ".join([p.strip() for p in ret_passages[i].split(".")])
+        
     return ret_passages
 
 class textSpace(gym.spaces.Space):
@@ -151,8 +166,9 @@ class WikiEnv(gym.Env):
         self.obs = ""
         for i in range(len(evidences)):
           e = evidences[i]
-          self.obs += f"Evidence {i+1}: {e}\n"
+          self.obs += f"\nEvidence {i+1}: {e}\nSource: {search_url}"
 
+        
         #  = self.get_page_obs("Evidence:".join(evidences))
         
         # self.page = ""
@@ -163,6 +179,14 @@ class WikiEnv(gym.Env):
         #       self.page += "\n"
         # self.obs = self.get_page_obs(self.page)
         self.lookup_keyword = self.lookup_list = self.lookup_cnt = None
+
+  def search_rxlist(self, entity):
+    passages, url = crawl_evidences(entity)
+    if passages is not None:
+      evidences = get_diversed_evidences(self.sbert, self.claim, passages, beta=0.7, k=3)
+      for i in range(len(evidences)):
+        e = evidences[i]
+        self.obs += f"\nEvidence {i+4}: {e}\nSource: {url}"
   
   def step(self, action):
     reward = 0
@@ -179,7 +203,8 @@ class WikiEnv(gym.Env):
       self.search_wiki(entity)
       #Check if the entity is a compound/vaccine/drug, search for more info, if yes
       #Look for additional info (MedDRA, https://www.rxlist.com/)
-
+      if is_drug(entity):
+        self.search_rxlist(entity)
       
     elif action.startswith("lookup[") and action.endswith("]"):
       keyword = action[len("lookup["):-1]

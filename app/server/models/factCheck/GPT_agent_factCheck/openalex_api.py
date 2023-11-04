@@ -4,8 +4,12 @@ from bs4 import BeautifulSoup
 import requests
 import time
 
-
-
+def fetch_wikidata(wikidata_id):
+    url = f'https://www.wikidata.org/wiki/Special:EntityData/{wikidata_id}.json'
+    try:
+        return requests.get(url).json()
+    except:
+        return 'There was and error'
 def clean_str(p):
   return p.encode().decode("unicode-escape").encode("latin1").decode("utf-8")
 
@@ -42,6 +46,7 @@ def get_concepts(drug):
     print("Crawl the evidence links from Google Search")
     url = f'https://api.openalex.org/concepts?search={drug}'
     wiki_re = ''
+    wikidata_json = ''
     r = requests.get(url.strip()).json()
     # print(r)
     results = r["results"]
@@ -49,13 +54,18 @@ def get_concepts(drug):
         if 'ids' in re:
             url_wikipedia = re['ids']['wikipedia']
             wiki_re = wiki_crawler(url_wikipedia)
-            print(wiki_re)
+            # print(wiki_re)
+        if 'wikidata' in re:
+            url_wikidata = re['wikidata']
+            wikidata_id = url_wikidata.split("/")[-1]
+            wikidata_json = fetch_wikidata(wikidata_id)
     # import pdb
     # pdb.set_trace()
-    return wiki_re
+    return wiki_re, wikidata_json
 
 
 if __name__ == "__main__":
-    links = get_concepts("Creatine")
-
+    wiki_re, wikidata_json = get_concepts("Creatine")
+    print(wiki_re)
+    print(wikidata_json)
     pass

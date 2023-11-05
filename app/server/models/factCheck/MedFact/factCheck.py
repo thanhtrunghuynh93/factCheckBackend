@@ -47,6 +47,9 @@ def step(env, action):
 
 def factCheck(claim, state = "", current_step = 0):
 
+    # print("Claim:".format(claim))
+    # print("State:".format(state))
+
     if state == "":        
         state = "Claim: {}".format(claim)
 
@@ -64,8 +67,8 @@ def factCheck(claim, state = "", current_step = 0):
         thought, action = thought_action.strip().split(f"\nAction {i}: ")
     except:
         thought = thought_action.strip().split('\n')[0]
-        # action = llm_gpt4(prompt + "\n" + f"Thought {i}: {thought}\nAction {i}:", stop=[f"\n"]).strip()
-        action = llm(prompt + "\n" + f"Thought {i}: {thought}\nAction {i}:", stop=[f"\n"]).strip()
+        action = llm_gpt4(prompt + "\n" + f"Thought {i}: {thought}\nAction {i}:", stop=[f"\n"]).strip()
+        # action = llm(prompt + "\n" + f"Thought {i}: {thought}\nAction {i}:", stop=[f"\n"]).strip()
     
     obs, r, done, info = step(env, action[0].lower() + action[1:])
     obs = obs.replace('\\n', '')
@@ -118,13 +121,13 @@ def format_answer(claim, state, current_step, done, result):
             evidence["content"] = line.split(":")[1]
 
         if "Source" in line:
-            evidence["source"] = "".join(line.split(":")[1:])
+            evidence["source"] = "".join(line.split(":")[1:]).strip()
             evidence_tuples.append(evidence)
     
     s["evidences"] = evidence_tuples
     steps.append(s)
     res["steps"] = steps
-    res["state"] = state
+    res["current_state"] = state
     res["result"] = result
     return json.dumps(res)
 
@@ -134,10 +137,12 @@ if __name__ == "__main__":
     claim = "Creatine can cause abdominal cramp"
     res = factCheck(claim)
     # state, current_step, done = factCheck(claim)
-    # # print(state)
+    # print(res)
     res = json.loads(res)
-    res = factCheck(claim, res["state"], res["current_step"])
-    print(res)
+    # print(res["state"])    
+    res = factCheck(claim, res["current_state"], res["current_step"])
+    res = json.loads(res)
+    print(res["current_state"])
     
     # print(state)
 

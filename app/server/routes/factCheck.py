@@ -33,7 +33,11 @@ router = APIRouter()
 
 @router.post("/medfact", response_description="Medfact")
 async def get_question_by_params(params: medFact = Body(...)):
+    # print("Received params")
+    # print(params)
     params = jsonable_encoder(params)
+    # print("Parse params")
+    # print(params)
     factCheck = await medfact(params)
     return ResponseModel(factCheck, "Fact checked successfully.")
 

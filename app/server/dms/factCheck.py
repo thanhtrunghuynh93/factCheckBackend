@@ -21,7 +21,7 @@ from server.models.factCheck.MedFact.factCheck import factCheck
 async def medfact(params: dict) -> dict:
     params = dict(params)
     print(params["claim"])
-    res = factCheck(params)    
+    res = factCheck(claim = params["claim"], state=params["state"], current_step=params["current_step"])    
     return res
 
 async def fact_check_by_gpt(params: dict) -> dict:
